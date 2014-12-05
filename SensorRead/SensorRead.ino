@@ -7,10 +7,9 @@
 
 void setup()
 {
-  Wire.begin();
-  initSensor(); //novo
-  //writeTo(0x68, 0x6B, 0);
   Serial.begin(9600);
+  Wire.begin();
+  initSensors(); 
 }
 
 void loop()

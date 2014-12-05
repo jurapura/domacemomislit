@@ -6,6 +6,7 @@
 #define CONFIG 0x1A // [5:3] EXT_SYNC_SET, [2:0] DigitalLowPassFilter
 #define GYRO_CONFIG 0x1B // [4:3] FS_SEL Select gyro range 0->250, 1->500, 2->1000, 3->2000 deg/s
 #define ACCEL_CONFIG 0x1C // [4:3] AFS_SEL Select gyro range 0->2g, 1->4g, 2->8g, 3->16g
+#define BYPASS 0x37 // Used to bypass to auxiliary I2C
 #define ACCEL_XOUT_H 0x3B // Accel x reading [15:8]
 #define ACCEL_XOUT_L 0x3C // Accel x reading [7:0]
 #define ACCEL_YOUT_H 0x3D // Accel y reading [15:8]
@@ -28,6 +29,7 @@
 //###     HMC5883L defines     ###
 //################################
 
+#define HMC5883L 0x1E
 #define CONFIG_A 0x00 // Configuration register A
 #define CONFIG_B 0x01 // Configuration register B
 #define MODE_REG 0x02 // Mode configuration register
