@@ -16,5 +16,5 @@ void setup()
 void loop()
 {
   readSensor();
-  delay(20);
+  delay(333);
 }
