@@ -8,12 +8,13 @@
 void setup()
 {
   Wire.begin();
-  initSensor(); 
+  //initSensor(); 
+  testSensor();
   Serial.begin(9600);
 }
 
 void loop()
 {
-  readSensor();
-  delay(20);
+  readSensor1();
+  delay(333);
 }

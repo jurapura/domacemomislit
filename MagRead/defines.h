@@ -2,6 +2,7 @@
 //###     HMC5883L defines     ###
 //################################
 
+#define HMC5883L 0x1E
 #define HMC5883L_W 0x3C // Writing
 #define HMC5883L_R 0x3D // Reading
 #define CONFIG_A 0x00 // Configuration register A
