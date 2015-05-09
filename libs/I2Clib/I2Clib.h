@@ -4,7 +4,7 @@
 #define I2CLIB_H
 
 #include "Arduino.h"
-#include "Wire.h"
+#include <Wire.h>
 
 class I2Clib
 {
@@ -23,4 +23,4 @@ public:
 
 };
 
-#endif
+#endif // _I2Clib_H_
