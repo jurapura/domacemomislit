@@ -4,8 +4,7 @@
 #include "quadControl.h"
 
 quadControl::quadControl()
-{
-	
+{	
 }
 
 void quadControl::init()
@@ -48,6 +47,16 @@ void quadControl::init()
                 motorFR.attach(MOTOR_FR);
                 motorBL.attach(MOTOR_BL);
                 motorBR.attach(MOTOR_BR);
+                
+
+                // PID INIT //
+                easyPID yawPID(&yawInput, &yawOutput, &yawSetpoint, yKp, yKi, yKd, YAW_OUTPUT_MAX, YAW_OUTPUT_MIN, SAMPLE_TIME);
+                easyPID yawRatePID(&yawRateInput, &yawRateOutput, &yawRateSetpoint, dyKp, dyKi, dyKd, YAW_RATE_OUTPUT_MAX, YAW_RATE_OUTPUT_MIN, SAMPLE_TIME);
+                easyPID pitchPID(&pitchInput, &pitchOutput, &pitchSetpoint, rpKp, rpKi, rpKd, PITCH_OUTPUT_MAX, PITCH_OUTPUT_MIN, SAMPLE_TIME);
+                easyPID pitchRatePID(&pitchRateInput, &pitchRateOutput, &pitchRateSetpoint, drpKp, drpKi, drpKd, PITCH_RATE_OUTPUT_MAX, PITCH_RATE_OUTPUT_MIN, SAMPLE_TIME);
+                easyPID rollPID(&rollInput, &rollOutput, &rollSetpoint, rpKp, rpKi, rpKd, ROLL_OUTPUT_MAX, ROLL_OUTPUT_MIN, SAMPLE_TIME);
+                easyPID rollRatePID(&rollRateInput, &rollRateOutput, &rollRateSetpoint, drpKp, drpKi, drpKd, ROLL_RATE_OUTPUT_MAX, ROLL_RATE_OUTPUT_MIN, SAMPLE_TIME);
+                
 
 	}
 	
@@ -192,6 +201,9 @@ void quadControl::ESCcalibration(){
 
 void quadControl::quadRegulator(){
       if (!Armed) return;
+      
+      
+      
       marg.getYawPitchRollDeg2(ypr);
       Serial.print(ypr[0]);
       Serial.print("    ");

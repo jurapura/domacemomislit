@@ -2,6 +2,7 @@
 #include <EEPROM.h>
 #include <Servo.h>
 #include "SensorFusion.h"
+#include "easyPID.h"
 
 
 
@@ -32,6 +33,21 @@
 #define MOTOR_BL 11
 #define MOTOR_BR 12
 #define motorMinOut 1072
+
+// PID DEFINES //
+#define YAW_OUTPUT_MIN -400
+#define YAW_OUTPUT_MAX 400
+#define ROLL_OUTPUT_MIN -400
+#define ROLL_OUTPUT_MAX 400
+#define PITCH_OUTPUT_MAX -400
+#define PITCH_OUTPUT_MIN 400
+#define YAW_RATE_OUTPUT_MIN -400
+#define YAW_RATE_OUTPUT_MAX 400
+#define ROLL_RATE_OUTPUT_MIN -400
+#define ROLL_RATE_OUTPUT_MAX 400
+#define PITCH_RATE_OUTPUT_MIN -400
+#define PITCH_RATE_OUTPUT_MAX 400
+#define SAMPLE_TIME 20
 
 
 
@@ -72,14 +88,28 @@ private:
     Servo motorBL;
     Servo motorBR;
     SensorFusion marg;
+    
+    
     double ypr[3] = {0, 0, 0};
     bool Armed;
     
     float rpKp,rpKi,rpKd,yKp,yKi,yKd;
     float drpKp,drpKi,drpKd,dyKp,dyKi,dyKd;
     float throtK;
-
     
+    int yawInput, yawOutput, yawSetpoint;
+    int yawRateInput, yawRateOutput, yawRateSetpoint;
+    int pitchInput, pitchOutput, pitchSetpoint;
+    int pitchRateInput, pitchRateOutput, pitchRateSetpoint;
+    int rollInput, rollOutput, rollSetpoint;
+    int rollRateInput, rollRateOutput, rollRateSetpoint;
+    
+    easyPID yawPID();
+    easyPID yawRatePID();
+    easyPID pitchPID();
+    easyPID pitchRatePID();
+    easyPID rollPID();
+    easyPID rollRatePID();  
 };
 
 
