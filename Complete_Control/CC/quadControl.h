@@ -2,6 +2,7 @@
 #include <EEPROM.h>
 #include <Servo.h>
 #include "SensorFusion.h"
+#include "easyPID.h"
 
 
 
@@ -27,13 +28,26 @@
 #define maxMessageLength 30
 #define normalModeLength 11
 
-#define MOTOR_FL 5
+#define MOTOR_FL 9
 #define MOTOR_FR 10
-#define MOTOR_BL 9
+#define MOTOR_BL 11
 #define MOTOR_BR 12
 #define motorMinOut 1072
-#define motorMaxOut 1860
-#define refToAng 50   //scale interval [-500,500] to degrees
+
+// PID DEFINES //
+#define YAW_OUTPUT_MIN -400
+#define YAW_OUTPUT_MAX 400
+#define ROLL_OUTPUT_MIN -400
+#define ROLL_OUTPUT_MAX 400
+#define PITCH_OUTPUT_MAX -400
+#define PITCH_OUTPUT_MIN 400
+#define YAW_RATE_OUTPUT_MIN -400
+#define YAW_RATE_OUTPUT_MAX 400
+#define ROLL_RATE_OUTPUT_MIN -400
+#define ROLL_RATE_OUTPUT_MAX 400
+#define PITCH_RATE_OUTPUT_MIN -400
+#define PITCH_RATE_OUTPUT_MAX 400
+#define SAMPLE_TIME 20
 
 
 
@@ -54,7 +68,7 @@ public:
 	
 	void motorWrite();
 
-        void motorMix(int,int,int,int, double, double);
+        void motorMix(float, float, float, float, double, double);
 
         void ESCcalibration();
 	
@@ -69,12 +83,13 @@ private:
     uint16_t refPitch;
     uint16_t refYaw;
     uint16_t refThrottle;
-    double refRollAng,refPitchAng,refYawAng;
     Servo motorFL;
     Servo motorFR;
     Servo motorBL;
     Servo motorBR;
     SensorFusion marg;
+    
+    
     double ypr[3] = {0, 0, 0};
     bool Armed;
     
@@ -82,9 +97,19 @@ private:
     float drpKp,drpKi,drpKd,dyKp,dyKi,dyKd;
     float throtK;
     
-    int outRollAngle,outPitchAngle,outYawAngle,outThrottle;
-
+    int yawInput, yawOutput, yawSetpoint;
+    int yawRateInput, yawRateOutput, yawRateSetpoint;
+    int pitchInput, pitchOutput, pitchSetpoint;
+    int pitchRateInput, pitchRateOutput, pitchRateSetpoint;
+    int rollInput, rollOutput, rollSetpoint;
+    int rollRateInput, rollRateOutput, rollRateSetpoint;
     
+    easyPID yawPID();
+    easyPID yawRatePID();
+    easyPID pitchPID();
+    easyPID pitchRatePID();
+    easyPID rollPID();
+    easyPID rollRatePID();  
 };
 
 

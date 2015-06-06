@@ -4,8 +4,7 @@
 #include "quadControl.h"
 
 quadControl::quadControl()
-{
-	
+{	
 }
 
 void quadControl::init()
@@ -37,16 +36,10 @@ void quadControl::init()
                 Serial.println(rpKp);
                 Serial.println(throtK);
 
-		refRollAng=0.0;
-    	        refPitchAng=0.0;
-    	        refYawAng=0.0;
+		refRoll=1500;
+    	        refPitch=1500;
+    	        refYaw=1500;
     	        refThrottle=1000;
-                
-    
-                outRollAngle=0;
-                outPitchAngle=0;
-                outYawAngle=0;
-                outThrottle=0;
     
                 Armed=0;
 		
@@ -54,6 +47,16 @@ void quadControl::init()
                 motorFR.attach(MOTOR_FR);
                 motorBL.attach(MOTOR_BL);
                 motorBR.attach(MOTOR_BR);
+                
+
+                // PID INIT //
+                easyPID yawPID(&yawInput, &yawOutput, &yawSetpoint, yKp, yKi, yKd, YAW_OUTPUT_MAX, YAW_OUTPUT_MIN, SAMPLE_TIME);
+                easyPID yawRatePID(&yawRateInput, &yawRateOutput, &yawRateSetpoint, dyKp, dyKi, dyKd, YAW_RATE_OUTPUT_MAX, YAW_RATE_OUTPUT_MIN, SAMPLE_TIME);
+                easyPID pitchPID(&pitchInput, &pitchOutput, &pitchSetpoint, rpKp, rpKi, rpKd, PITCH_OUTPUT_MAX, PITCH_OUTPUT_MIN, SAMPLE_TIME);
+                easyPID pitchRatePID(&pitchRateInput, &pitchRateOutput, &pitchRateSetpoint, drpKp, drpKi, drpKd, PITCH_RATE_OUTPUT_MAX, PITCH_RATE_OUTPUT_MIN, SAMPLE_TIME);
+                easyPID rollPID(&rollInput, &rollOutput, &rollSetpoint, rpKp, rpKi, rpKd, ROLL_OUTPUT_MAX, ROLL_OUTPUT_MIN, SAMPLE_TIME);
+                easyPID rollRatePID(&rollRateInput, &rollRateOutput, &rollRateSetpoint, drpKp, drpKi, drpKd, ROLL_RATE_OUTPUT_MAX, ROLL_RATE_OUTPUT_MIN, SAMPLE_TIME);
+                
 
 	}
 	
@@ -122,11 +125,6 @@ void quadControl::controlAction(){
 				refPitch=(messageBuffer[4] << 8) | messageBuffer[5];
 				refYaw=(messageBuffer[6] << 8) | messageBuffer[7];
 				refThrottle=(messageBuffer[8] << 8) | messageBuffer[9];	
-
-                                refRollAng=(refRoll-1500)/refToAng;
-    	                        refPitchAng=(refRoll-1500)/refToAng;
-    	                        refYawAng=(refRoll-1500)/refToAng;
-    	                        refThrottle=1000;
 				Serial.println("Normal mode");
                                 Serial.print(refRoll);
                                 Serial.print(refPitch);
@@ -203,14 +201,15 @@ void quadControl::ESCcalibration(){
 
 void quadControl::quadRegulator(){
       if (!Armed) return;
+      
+      
+      
       marg.getYawPitchRollDeg2(ypr);
       Serial.print(ypr[0]);
       Serial.print("    ");
       Serial.print(ypr[1]);
       Serial.print("    ");
       Serial.println(ypr[2]);
-      
-      this->motorMix(outRollAngle,outPitchAngle,outYawAngle,outThrottle,ypr[0],ypr[1]);
   }
 
 void quadControl::motorWrite(){
@@ -218,31 +217,11 @@ void quadControl::motorWrite(){
         if (refThrottle<1000) { refThrottle = 1000;}
         if (refThrottle>2000) { refThrottle = 2000;}
         motorFL.writeMicroseconds((int) refThrottle);
-        
+
 }
 
-void quadControl::motorMix(int outRoll, int outPitch, int outYaw, int Throttle, double roll, double pitch){
-      int FL,FR,BL,BR;
-      float drag;
-      drag=abs(sin(roll))+abs(sin(pitch));
-      FL= outPitch  +  outRoll  -  outYaw  +  Throttle  +  drag;
-      FR= outPitch  -  outRoll  +  outYaw  +  Throttle  +  drag;
-      BL=-outPitch  +  outRoll  +  outYaw  +  Throttle  +  drag;
-      BR=-outPitch  -  outRoll  -  outYaw  +  Throttle  +  drag;
-      constrain(FL,motorMinOut,motorMaxOut);
-      constrain(FR,motorMinOut,motorMaxOut);
-      constrain(BL,motorMinOut,motorMaxOut);
-      constrain(BR,motorMinOut,motorMaxOut);
-      
-      motorFL.writeMicroseconds(FL);
-      motorFR.writeMicroseconds(FR);
-      motorBL.writeMicroseconds(BL);
-      motorBR.writeMicroseconds(BR);
-      Serial.print(FL);Serial.print("    ");Serial.println(FR);
-      Serial.print(BL);Serial.print("    ");Serial.println(BR);
-      Serial.println();
-      
-      
+void quadControl::motorMix(float outRoll, float outPitch, float outYaw, float outThrottle, double roll, double pitch){
+
     
 
 }
