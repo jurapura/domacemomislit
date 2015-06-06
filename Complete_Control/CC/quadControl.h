@@ -27,11 +27,13 @@
 #define maxMessageLength 30
 #define normalModeLength 11
 
-#define MOTOR_FL 9
+#define MOTOR_FL 5
 #define MOTOR_FR 10
-#define MOTOR_BL 11
+#define MOTOR_BL 9
 #define MOTOR_BR 12
 #define motorMinOut 1072
+#define motorMaxOut 1860
+#define refToAng 50   //scale interval [-500,500] to degrees
 
 
 
@@ -52,7 +54,7 @@ public:
 	
 	void motorWrite();
 
-        void motorMix(float, float, float, float, double, double);
+        void motorMix(int,int,int,int, double, double);
 
         void ESCcalibration();
 	
@@ -67,6 +69,7 @@ private:
     uint16_t refPitch;
     uint16_t refYaw;
     uint16_t refThrottle;
+    double refRollAng,refPitchAng,refYawAng;
     Servo motorFL;
     Servo motorFR;
     Servo motorBL;
@@ -78,6 +81,8 @@ private:
     float rpKp,rpKi,rpKd,yKp,yKi,yKd;
     float drpKp,drpKi,drpKd,dyKp,dyKi,dyKd;
     float throtK;
+    
+    int outRollAngle,outPitchAngle,outYawAngle,outThrottle;
 
     
 };
